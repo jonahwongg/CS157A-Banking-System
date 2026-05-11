@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.css">
 </head>
 <body>
-<div class="page-shell">
+<div class="page-shell" data-active-tab="${activeTab}">
     <header class="hero">
         <div>
             <h1>Banking Application Dashboard</h1>
@@ -64,15 +64,16 @@
                 <input type="text" name="customerQuery" value="${customerQuery}" placeholder="Search customers by ID, name, email, or phone">
                 <input type="hidden" name="accountQuery" value="${accountQuery}">
                 <input type="hidden" name="transactionQuery" value="${transactionQuery}">
+                <input type="hidden" name="activeTab" value="customers-tab">
                 <button type="submit">Search</button>
-                <a href="${pageContext.request.contextPath}/dashboard?accountQuery=${accountQuery}&transactionQuery=${transactionQuery}" class="text-link">Clear</a>
+                <a href="${pageContext.request.contextPath}/dashboard?accountQuery=${accountQuery}&transactionQuery=${transactionQuery}&activeTab=customers-tab" class="text-link">Clear</a>
             </form>
             <form action="${pageContext.request.contextPath}/customers" method="post" class="form-grid">
                 <input type="hidden" name="action" value="create">
                 <input type="text" name="firstName" placeholder="First name" required>
                 <input type="text" name="lastName" placeholder="Last name" required>
                 <input type="email" name="email" placeholder="Email" required>
-                <input type="text" name="phoneNumber" placeholder="Phone number" required>
+                <input type="text" name="phoneNumber" placeholder="Phone number (123-4567)" pattern="\d{3}-\d{4}" title="Phone number must use the format 123-4567" required>
                 <button type="submit">Add Customer</button>
             </form>
             <div class="table-wrap">
@@ -101,7 +102,7 @@
                                         <input type="text" name="firstName" value="${customer.firstName}" required>
                                         <input type="text" name="lastName" value="${customer.lastName}" required>
                                         <input type="email" name="email" value="${customer.email}" required>
-                                        <input type="text" name="phoneNumber" value="${customer.phoneNumber}" required>
+                                        <input type="text" name="phoneNumber" value="${customer.phoneNumber}" pattern="\d{3}-\d{4}" title="Phone number must use the format 123-4567" required>
                                         <button type="submit" class="secondary">Update</button>
                                     </form>
                                     <form action="${pageContext.request.contextPath}/customers" method="post">
@@ -127,18 +128,19 @@
                 <input type="hidden" name="customerQuery" value="${customerQuery}">
                 <input type="text" name="accountQuery" value="${accountQuery}" placeholder="Search accounts by ID, number, customer, type, or status">
                 <input type="hidden" name="transactionQuery" value="${transactionQuery}">
+                <input type="hidden" name="activeTab" value="accounts-tab">
                 <button type="submit">Search</button>
-                <a href="${pageContext.request.contextPath}/dashboard?customerQuery=${customerQuery}&transactionQuery=${transactionQuery}" class="text-link">Clear</a>
+                <a href="${pageContext.request.contextPath}/dashboard?customerQuery=${customerQuery}&transactionQuery=${transactionQuery}&activeTab=accounts-tab" class="text-link">Clear</a>
             </form>
             <form action="${pageContext.request.contextPath}/accounts" method="post" class="form-grid">
                 <input type="hidden" name="action" value="create">
                 <select name="customerId" required>
                     <option value="">Customer</option>
-                    <c:forEach var="customer" items="${customers}">
+                    <c:forEach var="customer" items="${customerOptions}">
                         <option value="${customer.customerId}">${customer.firstName} ${customer.lastName}</option>
                     </c:forEach>
                 </select>
-                <input type="text" name="accountNumber" placeholder="Account number" required>
+                <input type="text" name="accountNumber" placeholder="Account number (CHK-00001)" pattern="(CHK|SVG|SYS|BUS)-\d{5}" title="Account number must use CHK, SVG, SYS, or BUS followed by a 5 digit number" required>
                 <select name="accountType" required>
                     <option value="">Type</option>
                     <option value="CHECKING">Checking</option>
@@ -181,13 +183,13 @@
                                         <input type="hidden" name="action" value="update">
                                         <input type="hidden" name="accountId" value="${account.accountId}">
                                         <select name="customerId" required>
-                                            <c:forEach var="customer" items="${customers}">
+                                            <c:forEach var="customer" items="${customerOptions}">
                                                 <option value="${customer.customerId}" ${customer.customerId == account.customerId ? 'selected' : ''}>
                                                         ${customer.firstName} ${customer.lastName}
                                                 </option>
                                             </c:forEach>
                                         </select>
-                                        <input type="text" name="accountNumber" value="${account.accountNumber}" required>
+                                        <input type="text" name="accountNumber" value="${account.accountNumber}" pattern="(CHK|SVG|SYS|BUS)-\d{5}" title="Account number must use CHK, SVG, SYS, or BUS followed by a 5 digit number" required>
                                         <select name="accountType" required>
                                             <option value="CHECKING" ${account.accountType == 'CHECKING' ? 'selected' : ''}>Checking</option>
                                             <option value="SAVINGS" ${account.accountType == 'SAVINGS' ? 'selected' : ''}>Savings</option>
@@ -278,8 +280,9 @@
                 <input type="hidden" name="customerQuery" value="${customerQuery}">
                 <input type="hidden" name="accountQuery" value="${accountQuery}">
                 <input type="text" name="transactionQuery" value="${transactionQuery}" placeholder="Search transactions by ID, type, description, account, or amount">
+                <input type="hidden" name="activeTab" value="transactions-tab">
                 <button type="submit">Search</button>
-                <a href="${pageContext.request.contextPath}/dashboard?customerQuery=${customerQuery}&accountQuery=${accountQuery}" class="text-link">Clear</a>
+                <a href="${pageContext.request.contextPath}/dashboard?customerQuery=${customerQuery}&accountQuery=${accountQuery}&activeTab=transactions-tab" class="text-link">Clear</a>
             </form>
             <div class="table-wrap">
                 <table>
@@ -327,7 +330,7 @@
                 <input type="hidden" name="action" value="create">
                 <select name="customerId" required>
                     <option value="">Customer</option>
-                    <c:forEach var="customer" items="${customers}">
+                    <c:forEach var="customer" items="${customerOptions}">
                         <option value="${customer.customerId}">${customer.firstName} ${customer.lastName}</option>
                     </c:forEach>
                 </select>
@@ -373,7 +376,7 @@
                                         <input type="hidden" name="action" value="update">
                                         <input type="hidden" name="loanId" value="${loan.loanId}">
                                         <select name="customerId" required>
-                                            <c:forEach var="customer" items="${customers}">
+                                            <c:forEach var="customer" items="${customerOptions}">
                                                 <option value="${customer.customerId}" ${customer.customerId == loan.customerId ? 'selected' : ''}>
                                                         ${customer.firstName} ${customer.lastName}
                                                 </option>

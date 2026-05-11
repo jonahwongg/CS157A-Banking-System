@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tabButtons = Array.from(document.querySelectorAll(".tab-button"));
     const tabPanels = Array.from(document.querySelectorAll(".tab-panel"));
+    const pageShell = document.querySelector(".page-shell");
 
     if (tabButtons.length > 0 && tabPanels.length > 0) {
         const activateTab = (targetId) => {
@@ -18,12 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
             tabPanels.forEach((panel) => {
                 panel.classList.toggle("is-active", panel.id === targetId);
             });
+            document.querySelectorAll('input[name="activeTab"]').forEach((input) => {
+                input.value = targetId;
+            });
         };
 
         tabButtons.forEach((button) => {
             button.addEventListener("click", () => activateTab(button.dataset.tabTarget));
         });
 
-        activateTab("customers-tab");
+        activateTab(pageShell?.dataset.activeTab || "customers-tab");
     }
 });

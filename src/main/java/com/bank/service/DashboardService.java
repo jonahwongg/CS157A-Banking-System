@@ -18,6 +18,10 @@ public class DashboardService {
         return customerService.searchCustomers(query);
     }
 
+    public List<Customer> getAllCustomers() throws SQLException {
+        return customerService.getAllCustomers();
+    }
+
     public List<Account> getAccounts(String query) throws SQLException {
         return accountService.searchAccounts(query);
     }

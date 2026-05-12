@@ -13,6 +13,7 @@ import java.util.List;
 
 public class AccountDao {
     public List<Account> findAll() throws SQLException {
+        // SELECT query that joins customers so the UI can show account ownership details.
         String sql = """
                 SELECT a.account_id, a.customer_id, a.account_number, a.account_type, a.balance, a.status,
                        CONCAT(c.first_name, ' ', c.last_name) AS customer_name
@@ -24,6 +25,7 @@ public class AccountDao {
     }
 
     public List<Account> search(String query) throws SQLException {
+        // SELECT query with filters for account search by id, number, owner, type, or status.
         String sql = """
                 SELECT a.account_id, a.customer_id, a.account_number, a.account_type, a.balance, a.status,
                        CONCAT(c.first_name, ' ', c.last_name) AS customer_name
@@ -80,6 +82,7 @@ public class AccountDao {
     }
 
     public void create(Account account) throws SQLException {
+        // INSERT query for creating a new bank account.
         String sql = "INSERT INTO accounts (customer_id, account_number, account_type, balance, status) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -93,6 +96,7 @@ public class AccountDao {
     }
 
     public void update(Account account) throws SQLException {
+        // UPDATE query for modifying account ownership, number, type, balance, or status.
         String sql = "UPDATE accounts SET customer_id = ?, account_number = ?, account_type = ?, balance = ?, status = ? WHERE account_id = ?";
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -107,6 +111,7 @@ public class AccountDao {
     }
 
     public void delete(int accountId) throws SQLException {
+        // DELETE query for removing an account record.
         String sql = "DELETE FROM accounts WHERE account_id = ?";
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -116,6 +121,7 @@ public class AccountDao {
     }
 
     public void updateBalance(Connection connection, int accountId, BigDecimal newBalance) throws SQLException {
+        // UPDATE query used inside deposit, withdrawal, and transfer transactions.
         String sql = "UPDATE accounts SET balance = ? WHERE account_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setBigDecimal(1, newBalance);

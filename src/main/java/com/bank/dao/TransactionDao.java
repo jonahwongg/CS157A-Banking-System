@@ -13,6 +13,7 @@ import java.util.List;
 
 public class TransactionDao {
     public List<BankTransaction> findAll() throws SQLException {
+        // SELECT query that loads the transaction log with readable account numbers.
         String sql = """
                 SELECT t.transaction_id, t.from_account_id, t.to_account_id, t.transaction_type, t.amount,
                        t.description, t.transaction_time,
@@ -27,6 +28,7 @@ public class TransactionDao {
     }
 
     public List<BankTransaction> search(String query) throws SQLException {
+        // SELECT query with filters for transaction history search.
         String sql = """
                 SELECT t.transaction_id, t.from_account_id, t.to_account_id, t.transaction_type, t.amount,
                        t.description, t.transaction_time,
@@ -68,6 +70,7 @@ public class TransactionDao {
     }
 
     public void create(Connection connection, BankTransaction transaction) throws SQLException {
+        // INSERT query that records each deposit, withdrawal, or transfer in the transaction log.
         String sql = """
                 INSERT INTO transactions (from_account_id, to_account_id, transaction_type, amount, description)
                 VALUES (?, ?, ?, ?, ?)
@@ -91,6 +94,7 @@ public class TransactionDao {
     }
 
     public void delete(int transactionId) throws SQLException {
+        // DELETE query for removing a transaction log entry.
         String sql = "DELETE FROM transactions WHERE transaction_id = ?";
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

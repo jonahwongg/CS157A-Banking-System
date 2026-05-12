@@ -12,6 +12,7 @@ import java.util.List;
 
 public class LoanDao {
     public List<Loan> findAll() throws SQLException {
+        // SELECT query used to display all loan records with customer names.
         String sql = """
                 SELECT l.loan_id, l.customer_id, l.principal_amount, l.interest_rate, l.term_months, l.status,
                        l.application_date, CONCAT(c.first_name, ' ', c.last_name) AS customer_name
@@ -33,6 +34,7 @@ public class LoanDao {
     }
 
     public void create(Loan loan) throws SQLException {
+        // INSERT query for creating a new loan application.
         String sql = """
                 INSERT INTO loans (customer_id, principal_amount, interest_rate, term_months, status, application_date)
                 VALUES (?, ?, ?, ?, ?, ?)
@@ -50,6 +52,7 @@ public class LoanDao {
     }
 
     public void update(Loan loan) throws SQLException {
+        // UPDATE query for loan processing and general loan edits.
         String sql = """
                 UPDATE loans
                 SET customer_id = ?, principal_amount = ?, interest_rate = ?, term_months = ?, status = ?, application_date = ?
@@ -69,6 +72,7 @@ public class LoanDao {
     }
 
     public void delete(int loanId) throws SQLException {
+        // DELETE query for removing a loan record.
         String sql = "DELETE FROM loans WHERE loan_id = ?";
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

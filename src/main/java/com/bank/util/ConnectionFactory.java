@@ -11,6 +11,7 @@ public final class ConnectionFactory {
     }
 
     public static Connection getConnection() throws SQLException {
+        // Centralized JDBC connection creation used by every DAO query and update.
         return DriverManager.getConnection(
                 DatabaseConfig.getUrl(),
                 DatabaseConfig.getUsername(),

@@ -12,11 +12,13 @@ import java.util.List;
 
 public class CustomerDao {
     public List<Customer> findAll() throws SQLException {
+        // SELECT query used to display all customer records on the dashboard.
         String sql = "SELECT customer_id, first_name, last_name, email, phone_number FROM customers ORDER BY customer_id";
         return executeCustomerQuery(sql, null);
     }
 
     public List<Customer> search(String query) throws SQLException {
+        // SELECT query with LIKE filters so users can search customers by several fields.
         String sql = """
                 SELECT customer_id, first_name, last_name, email, phone_number
                 FROM customers
@@ -53,6 +55,7 @@ public class CustomerDao {
     }
 
     public void create(Customer customer) throws SQLException {
+        // INSERT query for adding a new customer record.
         String sql = "INSERT INTO customers (first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?)";
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -65,6 +68,7 @@ public class CustomerDao {
     }
 
     public void update(Customer customer) throws SQLException {
+        // UPDATE query for editing an existing customer.
         String sql = "UPDATE customers SET first_name = ?, last_name = ?, email = ?, phone_number = ? WHERE customer_id = ?";
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -78,6 +82,7 @@ public class CustomerDao {
     }
 
     public void delete(int customerId) throws SQLException {
+        // DELETE query for removing a customer by primary key.
         String sql = "DELETE FROM customers WHERE customer_id = ?";
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

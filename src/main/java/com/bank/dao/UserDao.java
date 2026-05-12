@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 public class UserDao {
     public User findByUsername(String username) throws SQLException {
+        // SELECT query for login so the application can compare the submitted password hash.
         String sql = "SELECT user_id, username, password_hash, full_name, role_name FROM users WHERE username = ?";
 
         try (Connection connection = ConnectionFactory.getConnection();
